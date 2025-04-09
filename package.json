@@ -148,7 +148,7 @@
     ]
   },
   "codegenConfig": {
-    "name": "RNRnWifiP2pSpec",
+    "name": "RNRnWifiP2PSpec",
     "type": "modules",
     "jsSrcsDir": "src",
     "outputDir": {
@@ -156,7 +156,7 @@
       "android": "android/generated"
     },
     "android": {
-      "javaPackageName": "com.rnwifip2p"
+      "javaPackageName": "com.rn.wifi.p2p"
     },
     "includesGeneratedCode": true
   },
