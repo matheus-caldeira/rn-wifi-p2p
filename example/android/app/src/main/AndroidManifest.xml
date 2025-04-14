@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+    <!-- Add the following permission if you want to send files to the server -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <uses-permission
           android:name="android.permission.NEARBY_WIFI_DEVICES"
@@ -38,7 +41,5 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
-      <service android:name="com.rn.wifi.p2p.sender.FileSender" android:exported="true" android:enabled="true"  />
-      <service android:name="com.rn.wifi.p2p.sender.MessageSender" android:exported="true" android:enabled="true"  android:foregroundServiceType="dataSync"  />
     </application>
 </manifest>

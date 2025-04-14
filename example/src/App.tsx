@@ -143,8 +143,8 @@ const App = () => {
   };
   const onStartInvestigate = async () => {
     try {
-      const result = await startDiscoveringPeers();
-      appendLog(`onStartInvestigate result: ${result}`);
+      await startDiscoveringPeers();
+      appendLog(`onStartInvestigate started`);
     } catch (err) {
       console.warn('onStartInvestigate', err);
       appendLog(`onStartInvestigate err: ${err}`);
@@ -190,25 +190,12 @@ const App = () => {
   };
   const onSendFile = async () => {
     try {
-      const permissions = await PermissionsAndroid.requestMultiple([
+      await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       ]);
 
-      if (
-        permissions['android.permission.READ_EXTERNAL_STORAGE'] !== 'granted'
-      ) {
-        appendLog('Permissão de leitura de arquivos não concedida.');
-        return;
-      }
-
-      if (
-        permissions['android.permission.WRITE_EXTERNAL_STORAGE'] !== 'granted'
-      ) {
-        appendLog('Permissão de gravação de arquivos não concedida.');
-        return;
-      }
-
+      // change this to your file path
       const filePath = '/storage/emulated/0/Download/teste.txt';
 
       const result = await sendFile(filePath);
@@ -221,26 +208,12 @@ const App = () => {
   };
   const onReceiveFile = async () => {
     try {
-      const permissions = await PermissionsAndroid.requestMultiple([
+      await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       ]);
 
-      if (
-        permissions['android.permission.READ_EXTERNAL_STORAGE'] !== 'granted'
-      ) {
-        appendLog('Permissão de leitura de arquivos não concedida.');
-        return;
-      }
-
-      if (
-        permissions['android.permission.WRITE_EXTERNAL_STORAGE'] !== 'granted'
-      ) {
-        appendLog('Permissão de gravação de arquivos não concedida.');
-        return;
-      }
-
-      const fileName = `${Date.now()}.txt`;
+      const fileName = `test_${Date.now()}.txt`;
       const filePath = '/storage/emulated/0/Download/';
 
       const result = await receiveFile(filePath, fileName);
@@ -268,8 +241,8 @@ const App = () => {
   };
   const onReceiveMessage = async () => {
     try {
-      receiveMessage<string>({ meta: true }, (text) => {
-        appendLog(`onReceiveMessage message: ${text}`);
+      receiveMessage<string>({ meta: true }, ({ message }) => {
+        appendLog(`onReceiveMessage message: ${message}`);
       });
     } catch (err) {
       console.warn('onReceiveMessage', err);

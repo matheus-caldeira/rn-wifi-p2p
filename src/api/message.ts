@@ -19,11 +19,11 @@ export const sendMessageTo = async (message: string, address: string) => {
 
 export const receiveMessage = <T>(
   props: { meta: boolean },
-  callback: (message: T) => void
+  callback: (message: { message: T; fromAddress?: string }) => void
 ) => {
   try {
     return NativeRnWifiP2P.receiveMessage(props, (message: unknown) => {
-      callback(message as T);
+      callback(message as { message: T; fromAddress?: string });
     });
   } catch (error) {
     throw WifiP2PError.fromNativeError(error);

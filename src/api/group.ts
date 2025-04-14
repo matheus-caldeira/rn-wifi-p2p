@@ -17,17 +17,17 @@ export const removeGroup = async () => {
   }
 };
 
-export const getConnectionInfo = () => {
+export const getConnectionInfo = async () => {
   try {
-    return NativeRnWifiP2P.getConnectionInfo();
+    return await NativeRnWifiP2P.getConnectionInfo();
   } catch (error) {
     throw WifiP2PError.fromNativeError(error);
   }
 };
 
-export const getGroupInfo = () => {
+export const getGroupInfo = async () => {
   try {
-    return NativeRnWifiP2P.getGroupInfo();
+    return await NativeRnWifiP2P.getGroupInfo();
   } catch (error) {
     throw WifiP2PError.fromNativeError(error);
   }

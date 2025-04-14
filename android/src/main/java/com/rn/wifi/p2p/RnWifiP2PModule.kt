@@ -308,9 +308,7 @@ class RnWifiP2PModule(reactContext: ReactApplicationContext) :
         if (messageReceiver == null) {
           messageReceiver = MessageReceiver()
         }
-        messageReceiver?.start(props) { result ->
-          callback.invoke(result)
-        }
+        messageReceiver?.start(props, callback)
       } else {
         callback.invoke("NOT_IN_GROUP")
       }

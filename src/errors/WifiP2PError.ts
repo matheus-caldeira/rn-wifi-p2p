@@ -23,6 +23,10 @@ export class WifiP2PError extends Error {
     this.nativeError = nativeError;
   }
 
+  toString(): string {
+    return `[${this.name}] Code: ${this.code} | Message: ${this.message}`;
+  }
+
   static fromNativeError(error: any): WifiP2PError {
     const code =
       typeof error?.code === 'number' ? error.code : WifiP2PError.ERROR;
