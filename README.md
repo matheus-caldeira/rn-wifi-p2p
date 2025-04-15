@@ -1,51 +1,86 @@
 # rn-wifi-p2p
 
-React Native module for Android P2P communication using Wi-Fi Direct.
+[![CI](https://github.com/github.com/matheus-caldeira/rn-wifi-p2p/actions/workflows/ci.yml/badge.svg)](https://github.com/github.com/matheus-caldeira/rn-wifi-p2p/actions/workflows/ci.yml)
 
-## Installation
+**React Native module for peer-to-peer communication over Wi-Fi Direct on Android.**
 
-```sh
-npm install rn-wifi-p2p
-```
+This library enables Android devices to discover and connect to each other directly without an internet connection, ideal for offline file transfer, messaging, and collaborative apps.
 
-### Android
-
-To use **Wi-Fi Direct** on Android, the following permissions must be added to your app’s `AndroidManifest.xml`:
-
-```xml
-      <!-- If your app targets Android 13 (API level 33)
-         or higher, you must declare the NEARBY_WIFI_DEVICES permission. -->
-<uses-permission
-      android:name="android.permission.NEARBY_WIFI_DEVICES"
-      android:usesPermissionFlags="neverForLocation" />
-      <!-- If your app derives location information from Wi-Fi APIs,
-          don't include the "usesPermissionFlags" attribute. -->
-<uses-permission
-      android:required="true"
-      android:name="android.permission.ACCESS_FINE_LOCATION"
-      android:maxSdkVersion="32" />
-    <!-- If any feature in your app relies on precise location information,
-          don't include the "maxSdkVersion" attribute.  -->
-```
-
-## Usage
-
-```js
-import { multiply } from 'rn-wifi-p2p';
-
-// ...
-
-const result = multiply(3, 7);
-```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
+> ⚠️ This library is **Android-only** and requires runtime permissions to operate correctly.
 
 ---
 
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+## 📦 Installation
+
+Install the package using [Yarn](https://yarnpkg.com):
+
+```bash
+yarn add rn-wifi-p2p
+```
+
+---
+
+## ⚙️ Android Configuration
+
+Add the following permissions to your `AndroidManifest.xml`:
+
+```xml
+<!-- Required to send/receive files from external storage -->
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+<!-- Required to scan and connect to nearby peers on Android 13+ -->
+<uses-permission
+    android:name="android.permission.NEARBY_WIFI_DEVICES"
+    android:usesPermissionFlags="neverForLocation" />
+
+<!-- Required for Wi-Fi P2P discovery -->
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission
+    android:name="android.permission.ACCESS_FINE_LOCATION"
+    android:required="true"
+    android:maxSdkVersion="32" />
+```
+
+> ✅ If your app **requires precise location**, remove the `maxSdkVersion` attribute from `ACCESS_FINE_LOCATION`.
+
+> 🔐 These permissions must also be **requested at runtime** in your JavaScript code, especially from Android 6+ (API 23).
+
+---
+
+## 🧪 Example App
+
+A complete example demonstrating peer discovery, connection, file sharing, and messaging is available in the [`example/`](./example) directory.
+
+To learn how to run it locally, refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) guide.
+
+---
+
+## 📚 API Overview
+
+The following capabilities are supported:
+
+- 📡 Peer discovery using Wi-Fi Direct
+- 🔗 Device-to-device connection management
+- 📁 File transfer between devices
+- 💬 Message exchange using native sockets
+- 👥 Group creation and teardown
+- 🔄 Subscriptions to device, peer, and connection changes
+
+> Detailed API documentation is available in the source code and TypeScript typings.
+
+---
+
+## 🤝 Contributing
+
+To contribute to this module or run the example app locally, see [CONTRIBUTING.md](./CONTRIBUTING.md) for setup and development guidelines.
+
+---
+
+## 📄 License
+
+[MIT](./LICENSE)
+
+---
+
+Created with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)

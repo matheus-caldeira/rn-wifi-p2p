@@ -41,8 +41,25 @@
   },
   "keywords": [
     "react-native",
-    "ios",
-    "android"
+    "wifi-direct",
+    "wifi p2p",
+    "p2p communication",
+    "offline communication",
+    "android-only",
+    "peer to peer",
+    "file transfer",
+    "wifi file sharing",
+    "socket messaging",
+    "offline messaging",
+    "rn-wifi-p2p",
+    "react native wifi direct",
+    "wifi peer discovery",
+    "native module",
+    "local network communication",
+    "wifi communication",
+    "offline app",
+    "android",
+    "ios"
   ],
   "repository": {
     "type": "git",
