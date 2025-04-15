@@ -123,14 +123,6 @@ jobs:
       - name: Build
         run: yarn prepare
 
-      - name: Create and push git tag from package version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git tag "v$VERSION"
-          git push origin "v$VERSION"
-
       - name: Publish released tag to NPM
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
