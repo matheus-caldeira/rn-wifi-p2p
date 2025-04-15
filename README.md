@@ -1,6 +1,6 @@
 # rn-wifi-p2p
 
-[![CI](https://github.com/github.com/matheus-caldeira/rn-wifi-p2p/actions/workflows/ci.yml/badge.svg)](https://github.com/github.com/matheus-caldeira/rn-wifi-p2p/actions/workflows/ci.yml)
+[![CI](https://github.com/matheus-caldeira/rn-wifi-p2p/actions/workflows/ci.yml/badge.svg)](https://github.com/matheus-caldeira/rn-wifi-p2p/actions/workflows/ci.yml)
 
 **React Native module for peer-to-peer communication over Wi-Fi Direct on Android.**
 
