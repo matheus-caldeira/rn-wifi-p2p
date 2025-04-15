@@ -125,6 +125,8 @@ jobs:
 
       - name: Publish released tag to NPM
         run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           yarn release
         env:
