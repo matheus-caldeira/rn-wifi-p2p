@@ -9,6 +9,7 @@ on:
   merge_group:
     types:
       - checks_requested
+  workflow_dispatch:
 
 jobs:
   lint:
@@ -102,9 +103,40 @@ jobs:
 
       - name: Build example for Android
         env:
-          JAVA_OPTS: "-XX:MaxHeapSize=6g"
+          JAVA_OPTS: '-XX:MaxHeapSize=6g'
         run: |
           yarn turbo run build:android --cache-dir="${{ env.TURBO_CACHE_DIR }}"
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [lint, test, build-library, build-android]
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checking out ${{ github.ref_name }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build
+        run: yarn prepare
+
+      - name: Create and push git tag from package version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+
+      - name: Publish released tag to NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          yarn release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   # build-ios:
   #   runs-on: macos-latest
