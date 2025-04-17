@@ -19,6 +19,7 @@ export interface GroupInfo {
   interface: string;
   networkName: string;
   passphrase: string;
+  clientList: Device[];
   owner: {
     deviceAddress: string;
     deviceName: string;
@@ -45,6 +46,19 @@ export interface FileTransferResult {
 export interface MessageTransferResult {
   message: string;
   time: number;
+}
+
+export interface Message<T> {
+  message: T;
+  fromAddress: string;
+  fromHostName: string;
+  fromPort: number;
+  localAddress: string;
+  localPort: number;
+  receivedAt: number;
+  messageSize: number;
+  threadName: string;
+  connectionId: string;
 }
 
 export interface Spec extends TurboModule {
@@ -80,10 +94,7 @@ export interface Spec extends TurboModule {
     message: string,
     address: string
   ): Promise<MessageTransferResult>;
-  receiveMessage(
-    props: { meta: boolean },
-    callback: (message: unknown) => void
-  ): void;
+  startReceivingMessage(props?: { meta?: boolean }): Promise<void>;
   stopReceivingMessage(): void;
 }
 

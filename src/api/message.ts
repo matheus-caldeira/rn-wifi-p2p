@@ -1,5 +1,6 @@
-import NativeRnWifiP2P from '../NativeRnWifiP2P';
+import NativeRnWifiP2P, { type Message } from '../NativeRnWifiP2P';
 import { WifiP2PError } from '../errors';
+import { subscribeOnMessageReceived } from '../events';
 
 export const sendMessage = async (message: string) => {
   try {
@@ -17,14 +18,41 @@ export const sendMessageTo = async (message: string, address: string) => {
   }
 };
 
-export const receiveMessage = <T>(
-  props: { meta: boolean },
-  callback: (message: { message: T; fromAddress?: string }) => void
-) => {
+export const startReceivingMessage = async <T = string>(
+  props?: { meta?: boolean },
+  callback?: (message: Message<T>) => void,
+  { parse, useJson }: { parse?: (message: string) => T; useJson?: boolean } = {}
+): Promise<() => void> => {
   try {
-    return NativeRnWifiP2P.receiveMessage(props, (message: unknown) => {
-      callback(message as { message: T; fromAddress?: string });
-    });
+    await NativeRnWifiP2P.startReceivingMessage(props);
+
+    let remove: () => void;
+
+    if (callback) {
+      const subscription = subscribeOnMessageReceived((data) => {
+        let message: T;
+
+        if (parse) {
+          message = parse(data.message);
+        } else if (useJson) {
+          message = JSON.parse(data.message);
+        } else {
+          message = data.message as T;
+        }
+
+        callback({
+          ...data,
+          message,
+        });
+      });
+
+      remove = subscription.remove;
+    }
+
+    return () => {
+      NativeRnWifiP2P.stopReceivingMessage();
+      if (remove) remove();
+    };
   } catch (error) {
     throw WifiP2PError.fromNativeError(error);
   }

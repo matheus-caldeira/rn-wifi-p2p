@@ -11,6 +11,7 @@ import android.os.ResultReceiver
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
+import com.rn.wifi.p2p.core.Event
 import com.rn.wifi.p2p.core.EventReceiver
 import com.rn.wifi.p2p.core.Mapper
 import com.rn.wifi.p2p.receiver.FileReceiver
@@ -302,15 +303,21 @@ class RnWifiP2PModule(reactContext: ReactApplicationContext) :
     MessageSender.enqueueWork(context, intent)
   }
 
-  override fun receiveMessage(props: ReadableMap, callback: Callback) {
+  override fun startReceivingMessage(props: ReadableMap?, promise: Promise) {
     manager?.requestConnectionInfo(channel) { info ->
       if (info.groupFormed) {
         if (messageReceiver == null) {
-          messageReceiver = MessageReceiver()
+          messageReceiver = MessageReceiver(
+            callback = { params ->
+              Log.i(TAG, "Callback recebida: ${params.toString()}")
+              eventReceiver?.emit(Event.MESSAGE_RECEIVED, params)
+            }
+          )
         }
-        messageReceiver?.start(props, callback)
+        messageReceiver?.start(props)
+        promise.resolve(null)
       } else {
-        callback.invoke("NOT_IN_GROUP")
+        promise.reject("NOT_IN_GROUP", "Not in a group.")
       }
     }
   }

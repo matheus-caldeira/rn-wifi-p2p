@@ -20,6 +20,7 @@ class EventReceiver(
 
     companion object {
         private const val TAG = "RnWifiP2P"
+        private const val MODULE = "RN_WIFI_P2P"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -29,14 +30,14 @@ class EventReceiver(
             WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> {
                 manager.requestPeers(channel) { peers ->
                     val data = mapper.mapDevicesInfo(peers)
-                    emit("RN_WIFI_P2P:PEERS_UPDATED", data)
+                    emit(Event.PEERS_UPDATED, data)
                 }
             }
 
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
                 manager.requestConnectionInfo(channel) { info ->
                     val data = mapper.mapConnectionInfo(info)
-                    emit("RN_WIFI_P2P:CONNECTION_INFO_UPDATED", data)
+                    emit(Event.CONNECTION_INFO_UPDATED, data)
                 }
             }
 
@@ -44,7 +45,7 @@ class EventReceiver(
                 manager.requestGroupInfo(channel) { group ->
                     group?.let {
                         val data = mapper.mapGroupInfo(it)
-                        emit("RN_WIFI_P2P:THIS_DEVICE_CHANGED_ACTION", data)
+                        emit(Event.THIS_DEVICE_CHANGED_ACTION, data)
                     }
                 }
             }
@@ -53,13 +54,15 @@ class EventReceiver(
         }
     }
 
-    private fun emit(event: String, params: WritableMap?) {
-        try {
+    fun emit(event: Event, params: WritableMap?) {
+      val fullEventName = "${MODULE}_${event.eventName}"
+      Log.i(TAG, "calling event $fullEventName")
+      try {
             reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-                .emit(event, params)
+                .emit(fullEventName, params)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to emit event $event: ${e.message}", e)
+            Log.e(TAG, "Failed to emit event $fullEventName: ${e.message}", e)
         }
     }
 }

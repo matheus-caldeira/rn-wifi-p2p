@@ -2,7 +2,6 @@ package com.rn.wifi.p2p.receiver
 
 import android.util.Log
 import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import java.io.InputStream
@@ -13,7 +12,9 @@ import java.nio.charset.Charset
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class MessageReceiver {
+class MessageReceiver(
+  private val callback: (WritableMap) -> Unit,
+){
 
     private var executor: ExecutorService? = null
     @Volatile
@@ -27,7 +28,7 @@ class MessageReceiver {
         private const val CHARSET = "UTF-8"
     }
 
-    fun start(props: ReadableMap?, callback: Callback) {
+    fun start(props: ReadableMap?) {
         if (isRunning) {
             Log.w(TAG, "MessageReceiver already running")
             return
@@ -48,18 +49,35 @@ class MessageReceiver {
                     try {
                         val client: Socket = serverSocket!!.accept()
                         val fromAddress = client.inetAddress?.hostAddress ?: "unknown"
+                        val receivedAt = System.currentTimeMillis()
+                        val fromHostName = client.inetAddress?.hostName ?: "unknown"
+                        val fromPort = client.port
+                        val localAddress = client.localAddress?.hostAddress ?: "unknown"
+                        val localPort = client.localPort
+                        val threadName = Thread.currentThread().name
+                        val connectionId = "${fromAddress}:${fromPort}_${receivedAt.hashCode()}"
+
                         val message = readMessage(client.getInputStream())
+                        val messageSize = message.toByteArray().size
+
                         client.close()
 
+                        val map: WritableMap = Arguments.createMap()
+                        map.putString("message", message)
+
                         if (returnMeta) {
-                            val map: WritableMap = Arguments.createMap()
-                            map.putString("message", message)
                             map.putString("fromAddress", fromAddress)
-                            callback.invoke(map)
-                        } else {
-                            callback.invoke(message)
+                            map.putString("fromHostName", fromHostName)
+                            map.putInt("fromPort", fromPort)
+                            map.putString("localAddress", localAddress)
+                            map.putInt("localPort", localPort)
+                            map.putDouble("receivedAt", receivedAt.toDouble())
+                            map.putInt("messageSize", messageSize)
+                            map.putString("threadName", threadName)
+                            map.putString("connectionId", connectionId)
                         }
 
+                        callback(map)
                         Log.i(TAG, "MessageReceiver: message received")
 
                     } catch (e: Exception) {

@@ -1,6 +1,11 @@
 import { DeviceEventEmitter, type EmitterSubscription } from 'react-native';
 import type { WifiP2PEventType, SubscriptionCallback } from './types';
-import type { GroupInfo, WifiP2pInfo, Device } from '../NativeRnWifiP2P';
+import type {
+  GroupInfo,
+  WifiP2pInfo,
+  Device,
+  Message,
+} from '../NativeRnWifiP2P';
 
 const MODULE_NAME = 'RN_WIFI_P2P';
 const subscriptionsMap = new Map<string, Set<EmitterSubscription>>();
@@ -9,7 +14,7 @@ export const subscribeOnEvent = (
   event: WifiP2PEventType,
   callback: SubscriptionCallback
 ): EmitterSubscription => {
-  const fullEvent = `${MODULE_NAME}:${event}`;
+  const fullEvent = `${MODULE_NAME}_${event}`;
   const subscription = DeviceEventEmitter.addListener(fullEvent, callback);
 
   if (!subscriptionsMap.has(fullEvent)) {
@@ -62,3 +67,10 @@ export const subscribeOnConnectionInfoUpdates = (
 
 export const removeAllListenersFromConnectionInfoUpdates = (): void =>
   removeAllListenersFromEvent('CONNECTION_INFO_UPDATED');
+
+export const subscribeOnMessageReceived = (
+  callback: (data: Message<string>) => void
+): EmitterSubscription => subscribeOnEvent('MESSAGE_RECEIVED', callback);
+
+export const removeAllListenersFromMessageReceived = (): void =>
+  removeAllListenersFromEvent('MESSAGE_RECEIVED');

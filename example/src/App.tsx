@@ -17,6 +17,7 @@ import {
   subscribeOnThisDeviceChanged,
   subscribeOnPeersUpdates,
   subscribeOnConnectionInfoUpdates,
+  subscribeOnMessageReceived,
   type Device,
   cancelConnect,
   createGroup,
@@ -28,7 +29,7 @@ import {
   sendFile,
   receiveFile,
   sendMessage,
-  receiveMessage,
+  startReceivingMessage,
   stopReceivingMessage,
   getGroupInfo,
 } from 'rn-wifi-p2p';
@@ -90,6 +91,10 @@ const App = () => {
           });
           subscribeOnConnectionInfoUpdates((data) => {
             console.log('Connection info updated:', data);
+          });
+          subscribeOnMessageReceived((data) => {
+            console.log('Message received:', data);
+            appendLog(`receivingMessage: ${JSON.stringify(data)}`);
           });
           appendLog('Inicializado com sucesso!');
         } catch (e) {
@@ -229,7 +234,7 @@ const App = () => {
     try {
       const result = await sendMessage(
         JSON.stringify({
-          message,
+          text: message,
           date: Date.now(),
         })
       );
@@ -239,23 +244,27 @@ const App = () => {
       appendLog(`onSendMessage err: ${err}`);
     }
   };
-  const onReceiveMessage = async () => {
+  const onstartReceivingMessage = async () => {
     try {
-      receiveMessage<string>({ meta: true }, ({ message }) => {
-        appendLog(`onReceiveMessage message: ${message}`);
-      });
+      startReceivingMessage<{ text: string; date: number }>(
+        { meta: true },
+        ({ message: { date, text } }) => {
+          appendLog(`onstartReceivingMessage message: ${date} -  ${text}`);
+        },
+        { useJson: true }
+      );
     } catch (err) {
-      console.warn('onReceiveMessage', err);
-      appendLog(`onReceiveMessage err: ${err}`);
+      console.warn('onstartReceivingMessage', err);
+      appendLog(`onstartReceivingMessage err: ${err}`);
     }
   };
 
-  const onStopReceiveMessage = async () => {
+  const onStopstartReceivingMessage = async () => {
     try {
       await stopReceivingMessage();
     } catch (err) {
-      console.warn('onStopReceiveMessage', err);
-      appendLog(`onStopReceiveMessage err: ${err}`);
+      console.warn('onStopstartReceivingMessage', err);
+      appendLog(`onStopstartReceivingMessage err: ${err}`);
     }
   };
 
@@ -280,10 +289,10 @@ const App = () => {
           />
           <Button title="Enviar arquivo" onPress={onSendFile} />
           <Button title="Receber arquivo" onPress={onReceiveFile} />
-          <Button title="Receber mensagem" onPress={onReceiveMessage} />
+          <Button title="Receber mensagem" onPress={onstartReceivingMessage} />
           <Button
             title="Parar de receber mensagem"
-            onPress={onStopReceiveMessage}
+            onPress={onStopstartReceivingMessage}
           />
         </View>
 

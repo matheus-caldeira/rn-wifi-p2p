@@ -27,6 +27,14 @@ class Mapper {
         return array
     }
 
+    fun mapCollectionDevice(deviceCollection: Collection<WifiP2pDevice>): WritableArray {
+      val array = Arguments.createArray()
+      for (device in deviceCollection) {
+        array.pushMap(mapDeviceInfo(device))
+      }
+      return array
+    }
+
     fun mapDevicesInfo(deviceList: WifiP2pDeviceList): WritableMap {
         val map = Arguments.createMap()
         map.putArray("devices", mapDeviceList(deviceList))
@@ -56,6 +64,7 @@ class Mapper {
         map.putString("interface", group.`interface`)
         map.putString("networkName", group.networkName)
         map.putString("passphrase", group.passphrase)
+        map.putArray("clientList", mapCollectionDevice(group.clientList))
 
         val owner = group.owner
         if (owner != null) {
