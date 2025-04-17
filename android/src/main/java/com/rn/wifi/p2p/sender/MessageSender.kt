@@ -46,7 +46,7 @@ class MessageSender : Service() {
   override fun onCreate() {
     super.onCreate()
     createNotificationChannel()
-    val notification = buildNotification("Enviando mensagem via Wi-Fi P2P...")
+    val notification = buildNotification(getString(R.string.wifi_p2p_notification_sending_message))
     startForeground(NOTIFICATION_ID, notification)
   }
 
@@ -113,7 +113,7 @@ class MessageSender : Service() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       val serviceChannel = NotificationChannel(
         CHANNEL_ID,
-        "Wi-Fi P2P Sender",
+        getString(R.string.wifi_p2p_channel),
         NotificationManager.IMPORTANCE_LOW
       )
       val manager = getSystemService(NotificationManager::class.java)
@@ -123,9 +123,9 @@ class MessageSender : Service() {
 
   private fun buildNotification(content: String): Notification {
     return NotificationCompat.Builder(this, CHANNEL_ID)
-      .setContentTitle("WiFi P2P")
+      .setContentTitle(getString(R.string.wifi_p2p_notification_title))
       .setContentText(content)
-      .setSmallIcon(R.drawable.ic_notification) // Use um ícone válido no seu projeto
+      .setSmallIcon(R.drawable.ic_notification)
       .build()
   }
 }
