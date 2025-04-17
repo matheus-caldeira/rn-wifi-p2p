@@ -1,6 +1,6 @@
 {
   "name": "rn-wifi-p2p",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "React Native module for Android P2P communication using Wi-Fi Direct.",
   "source": "./src/index.tsx",
   "main": "./lib/module/index.js",
