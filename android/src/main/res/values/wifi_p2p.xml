@@ -1,5 +1,0 @@
-<resources>
-  <string name="wifi_p2p_notification_title">WiFi P2P</string>
-  <string name="wifi_p2p_notification_sending_message">Enviando mensagem via Wi-Fi P2P...</string>
-  <string name="wifi_p2p_channel">Wi-Fi P2P Sender</string>
-</resources>

@@ -61,10 +61,19 @@ export interface Message<T> {
   connectionId: string;
 }
 
+export interface Config {
+  notificationTitle: string;
+  sendingMessageText: string;
+  channelName: string;
+}
 export interface Spec extends TurboModule {
   // Inicialização
   init(): Promise<boolean>;
   stop(): Promise<boolean>;
+
+  // Configuração
+  setConfig(config: Config): void;
+  getConfig(): Promise<Config>;
 
   // Descoberta e conexão
   discoverPeers(): Promise<void>;

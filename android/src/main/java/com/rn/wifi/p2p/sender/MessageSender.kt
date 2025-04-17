@@ -10,6 +10,7 @@ import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.rn.wifi.p2p.R
+import com.rn.wifi.p2p.core.Config
 import com.rn.wifi.p2p.core.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +47,7 @@ class MessageSender : Service() {
   override fun onCreate() {
     super.onCreate()
     createNotificationChannel()
-    val notification = buildNotification(getString(R.string.wifi_p2p_notification_sending_message))
+    val notification = buildNotification(Config.sendingMessageText)
     startForeground(NOTIFICATION_ID, notification)
   }
 
@@ -113,7 +114,7 @@ class MessageSender : Service() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       val serviceChannel = NotificationChannel(
         CHANNEL_ID,
-        getString(R.string.wifi_p2p_channel),
+        Config.channelName,
         NotificationManager.IMPORTANCE_LOW
       )
       val manager = getSystemService(NotificationManager::class.java)
@@ -123,7 +124,7 @@ class MessageSender : Service() {
 
   private fun buildNotification(content: String): Notification {
     return NotificationCompat.Builder(this, CHANNEL_ID)
-      .setContentTitle(getString(R.string.wifi_p2p_notification_title))
+      .setContentTitle(Config.notificationTitle)
       .setContentText(content)
       .setSmallIcon(R.drawable.ic_notification)
       .build()

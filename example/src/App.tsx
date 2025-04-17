@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {
   initialize,
+  setConfig,
   connect,
   stop,
   removeAllSubscriptions,
@@ -81,6 +82,12 @@ const App = () => {
         try {
           await initialize();
           initializedRef.current = true;
+
+          setConfig({
+            notificationTitle: 'Change this title',
+            sendingMessageText: 'Change this message',
+            channelName: 'channel-name',
+          });
 
           subscribeOnThisDeviceChanged((data) => {
             console.log('This device changed:', data);

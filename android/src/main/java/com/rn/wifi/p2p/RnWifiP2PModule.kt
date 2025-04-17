@@ -11,14 +11,10 @@ import android.os.ResultReceiver
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
-import com.rn.wifi.p2p.core.Event
-import com.rn.wifi.p2p.core.EventReceiver
-import com.rn.wifi.p2p.core.Mapper
-import com.rn.wifi.p2p.receiver.FileReceiver
-import com.rn.wifi.p2p.receiver.MessageReceiver
-import com.rn.wifi.p2p.sender.FileSender
-import com.rn.wifi.p2p.sender.MessageSender
 import java.io.File
+import com.rn.wifi.p2p.core.*
+import com.rn.wifi.p2p.receiver.*
+import com.rn.wifi.p2p.sender.*
 
 @ReactModule(name = RnWifiP2PModule.NAME)
 class RnWifiP2PModule(reactContext: ReactApplicationContext) :
@@ -102,6 +98,27 @@ class RnWifiP2PModule(reactContext: ReactApplicationContext) :
     channel = null
     manager = null
   }
+
+  override fun setConfig(config: ReadableMap) {
+    if (config.hasKey("notificationTitle")) {
+      Config.notificationTitle = config.getString("notificationTitle") ?: Config.notificationTitle
+    }
+    if (config.hasKey("sendingMessageText")) {
+      Config.sendingMessageText = config.getString("sendingMessageText") ?: Config.sendingMessageText
+    }
+    if (config.hasKey("channelName")) {
+      Config.channelName = config.getString("channelName") ?: Config.channelName
+    }
+  }
+
+  override fun getConfig(promise: Promise) {
+    try {
+      promise.resolve(Config.toWritableMap())
+    } catch (e: Exception) {
+      promise.reject("GET_CONFIG_ERROR", e.message)
+    }
+  }
+
 
   override fun discoverPeers(promise: Promise) {
     manager?.discoverPeers(channel, object : WifiP2pManager.ActionListener {
